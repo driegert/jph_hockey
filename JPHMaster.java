@@ -92,10 +92,10 @@ public class JPHMaster {
 		JButton btnMiss_1 = new JButton("MISS");
 		shotsPanel.add(btnMiss_1, "cell 23 2");
 		
-		JButton btnShot = new JButton("SHOT");
+		JButton btnShot = new JButton("SAVE");
 		shotsPanel.add(btnShot, "cell 1 4");
 
-		JButton btnShot_1 = new JButton("SHOT");
+		JButton btnShot_1 = new JButton("SAVE");
 		shotsPanel.add(btnShot_1, "cell 21 4");
 
 		JButton btnGoal_1 = new JButton("GOAL");
