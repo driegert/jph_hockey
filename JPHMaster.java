@@ -316,12 +316,12 @@ public class JPHMaster {
  * ====================================================*/
 		JPanel shiftPanel = new JPanel();
 		tabbedPane.addTab("Shift Change", null, shiftPanel, null);
-		shiftPanel.setLayout(new MigLayout("", "[][][]30[][][]", "[][][][][][][][][][]20[]"));
+		shiftPanel.setLayout(new MigLayout("", "[][][]30[][][]30[][][]", "[][][][][][][][][][]20[]"));
 		
 		// Add an array of textboxes and buttons (maybe this is NOT the way to do this..., but who's to say?
-		final JButton[] btnOn = new JButton[20];
-		final JButton[] btnOff = new JButton[20];
-		final JTextField[] txtPlayer = new JTextField[20];
+		final JButton[] btnOn = new JButton[30];
+		final JButton[] btnOff = new JButton[30];
+		final JTextField[] txtPlayer = new JTextField[30];
 		
 		for (int i=0; i<10; i++){
 			txtPlayer[i] = new JTextField();
@@ -353,11 +353,26 @@ public class JPHMaster {
 			btnOn[i].setEnabled(false);
 		}
 		
+		for (int i=20; i < 30; i++){
+			txtPlayer[i] = new JTextField();
+			txtPlayer[i].setColumns(4);
+			shiftPanel.add(txtPlayer[i], "cell 6 " + (i-20));
+			
+			btnOff[i] = new JButton("OFF");
+			btnOff[i].setBackground(new Color(210,105,30));
+			shiftPanel.add(btnOff[i], "cell 7 " + (i-20));
+			
+			btnOn[i] = new JButton("ON");
+			btnOn[i].setBackground(new Color(30,144,255));
+			shiftPanel.add(btnOn[i], "cell 8 " + (i-20));
+			btnOn[i].setEnabled(false);
+		}
+		
 		// Action Listeners
-		for (int i = 0; i < 20; i++){
+		for (int i = 0; i < 30; i++){
 			btnOff[i].addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					for (int i = 0; i < 20; i++){
+					for (int i = 0; i < 30; i++){
 						if (e.getSource().equals(btnOff[i])){
 							btnOn[i].setEnabled(true);
 							btnOff[i].setEnabled(false);
@@ -371,7 +386,7 @@ public class JPHMaster {
 			
 			btnOn[i].addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					for (int i = 0; i < 20; i++){
+					for (int i = 0; i < 30; i++){
 						if (e.getSource().equals(btnOn[i])){
 							btnOn[i].setEnabled(false);
 							btnOff[i].setEnabled(true);
@@ -394,7 +409,7 @@ public class JPHMaster {
 		// Add action listeners for the lock and unlock buttons
 		btnLock.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				for (int i = 0; i < 20; i++){
+				for (int i = 0; i < 30; i++){
 					txtPlayer[i].setEditable(false);
 					
 					if (txtPlayer[i].getText().equals("")){
@@ -410,7 +425,7 @@ public class JPHMaster {
 		
 		btnUnlock.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				for (int i = 0; i < 20; i++){
+				for (int i = 0; i < 30; i++){
 					txtPlayer[i].setEditable(true);
 					
 					if (txtPlayer[i].getText().equals("")){
