@@ -344,129 +344,371 @@ public class JPHMaster {
 /* ====================================================
  * ==== Adding the Shift Changes Panel and objects ==== 
  * ====================================================*/
+		// number of rows for lines
+		final int shiftRows = 4;
+		
 		JPanel shiftPanel = new JPanel();
 		tabbedPane.addTab("Shift Change", null, shiftPanel, null);
-		shiftPanel.setLayout(new MigLayout("", "[][][]30[][][]30[][][]", "[][][][][][][][][][]20[]"));
+		// D1 D2 ALL <> F1 F2 F3 ALL <> (are the columns, D: defense, F: forward)
+		shiftPanel.setLayout(new MigLayout("", "[][][][]20[][][][][][]", "[]15[][][][]40[]40[]"));
 		
-		// Add an array of textboxes and buttons (maybe this is NOT the way to do this..., but who's to say?
-		final JButton[] btnOn = new JButton[30];
-		final JButton[] btnOff = new JButton[30];
-		final JTextField[] txtPlayer = new JTextField[30];
+		JLabel lblShiftDefense = new JLabel("D");
+		shiftPanel.add(lblShiftDefense, "cell 1 0");
 		
-		for (int i=0; i<10; i++){
-			txtPlayer[i] = new JTextField();
-			txtPlayer[i].setColumns(4);
-			shiftPanel.add(txtPlayer[i], "cell 0 " + i);
-			
-			btnOff[i] = new JButton("OFF");
-			btnOff[i].setBackground(new Color(210,105,30));
-			shiftPanel.add(btnOff[i], "cell 1 " + i);
-			
-			btnOn[i] = new JButton("ON");
-			btnOn[i].setBackground(new Color(30,144,255));
-			shiftPanel.add(btnOn[i], "cell 2 " + i);
-			btnOn[i].setEnabled(false);
+		JLabel lblShiftOffense = new JLabel("F");
+		shiftPanel.add(lblShiftOffense, "cell 4 0");
+		
+		final JButton[] btnShiftDefense = new JButton[shiftRows*2];
+		final JButton[] btnShiftForward = new JButton[shiftRows*3];
+		final JButton[] btnShiftDefenseAll = new JButton[shiftRows];
+		final JButton[] btnShiftForwardAll = new JButton[shiftRows];
+		final JTextField txtShiftDefense = new JTextField("Def");
+		final JTextField txtShiftForward = new JTextField("For");
+		final JButton btnShiftAddDefense = new JButton("A");
+		final JButton btnShiftAddForward = new JButton("A");
+		final JButton btnShiftResetDefense = new JButton("R");
+		final JButton btnShiftResetForward = new JButton("R");
+		final JButton[] btnShiftCurrentD = new JButton[4];
+		final JButton[] btnShiftCurrentF = new JButton[6];
+		
+		// Set size of the text fields and add and reset buttons
+		txtShiftDefense.setSize(20, 20);
+		txtShiftForward.setSize(20, 20);
+		btnShiftAddDefense.setSize(20,20);
+		btnShiftAddForward.setSize(20,20);
+		btnShiftResetDefense.setSize(20,20);
+		btnShiftResetForward.setSize(20,20);
+		
+		// Create, disable, and make invisible all the defense buttons
+		for (int i = 0; i < shiftRows*2; i++){
+			btnShiftDefense[i] = new JButton("");
+			btnShiftDefense[i].setSize(20, 20);
+			btnShiftDefense[i].setVisible(false);
+			btnShiftDefense[i].setEnabled(false);
 		}
 		
-		for (int i=10; i < 20; i++){
-			txtPlayer[i] = new JTextField();
-			txtPlayer[i].setColumns(4);
-			shiftPanel.add(txtPlayer[i], "cell 3 " + (i-10));
-			
-			btnOff[i] = new JButton("OFF");
-			btnOff[i].setBackground(new Color(210,105,30));
-			shiftPanel.add(btnOff[i], "cell 4 " + (i-10));
-			
-			btnOn[i] = new JButton("ON");
-			btnOn[i].setBackground(new Color(30,144,255));
-			shiftPanel.add(btnOn[i], "cell 5 " + (i-10));
-			btnOn[i].setEnabled(false);
+		// Disable and make invisible all the forward buttons
+		for (int i = 0; i < shiftRows*3; i++){
+			btnShiftForward[i] = new JButton("");
+			btnShiftForward[i].setSize(20, 20);
+			btnShiftForward[i].setVisible(false);
+			btnShiftForward[i].setEnabled(false);
 		}
 		
-		for (int i=20; i < 30; i++){
-			txtPlayer[i] = new JTextField();
-			txtPlayer[i].setColumns(4);
-			shiftPanel.add(txtPlayer[i], "cell 6 " + (i-20));
-			
-			btnOff[i] = new JButton("OFF");
-			btnOff[i].setBackground(new Color(210,105,30));
-			shiftPanel.add(btnOff[i], "cell 7 " + (i-20));
-			
-			btnOn[i] = new JButton("ON");
-			btnOn[i].setBackground(new Color(30,144,255));
-			shiftPanel.add(btnOn[i], "cell 8 " + (i-20));
-			btnOn[i].setEnabled(false);
+		// Disable and make invisible all the "all" buttons.
+		for (int i = 0; i < shiftRows; i++){
+			btnShiftDefenseAll[i] = new JButton("ALL");
+			btnShiftForwardAll[i] = new JButton("ALL");
+			btnShiftDefenseAll[i].setSize(20,20);
+			btnShiftForwardAll[i].setSize(20,20);
+			btnShiftDefenseAll[i].setVisible(false);
+			btnShiftDefenseAll[i].setEnabled(false);
+			btnShiftForwardAll[i].setVisible(false);
+			btnShiftForwardAll[i].setEnabled(false);
 		}
 		
-		// Action Listeners
-		for (int i = 0; i < 30; i++){
-			btnOff[i].addActionListener(new ActionListener() {
+		for (int i = 0; i < shiftRows; i++){
+			// Add defense buttons.
+			shiftPanel.add(btnShiftDefense[2*i + 0], "cell 0 " + (i + 1));
+			shiftPanel.add(btnShiftDefense[2*i + 1], "cell 1 " + (i + 1));
+			shiftPanel.add(btnShiftDefenseAll[i], "cell 2 " + (i+ 1));
+			
+			// Add forward buttons.
+			shiftPanel.add(btnShiftForward[3*i + 0], "cell 4 " + (i+ 1));
+			shiftPanel.add(btnShiftForward[3*i + 1], "cell 5 " + (i+ 1));
+			shiftPanel.add(btnShiftForward[3*i + 2], "cell 6 " + (i+ 1));
+			shiftPanel.add(btnShiftForwardAll[i], "cell 7 " + (i+ 1));
+		}
+		
+		// Add text fields and add / reset buttons
+		shiftPanel.add(txtShiftDefense, "cell 0 6");
+		shiftPanel.add(btnShiftAddDefense, "cell 1 6");
+		shiftPanel.add(btnShiftResetDefense, "cell 2 6");
+		shiftPanel.add(txtShiftForward, "cell 4 6");
+		shiftPanel.add(btnShiftAddForward, "cell 5 6");
+		shiftPanel.add(btnShiftResetForward, "cell 6 6");
+		
+		// Add current player buttons
+		for (int i = 0; i < 4; i++){
+			btnShiftCurrentD[i] = new JButton("  ");
+			btnShiftCurrentD[i].setSize(20, 20);
+			btnShiftCurrentD[i].setEnabled(false);
+			shiftPanel.add(btnShiftCurrentD[i], "cell " + i + " 5");
+		}
+		
+		for (int i = 0; i < 6; i++){
+			btnShiftCurrentF[i] = new JButton("  ");
+			btnShiftCurrentF[i].setSize(20, 20);
+			btnShiftCurrentF[i].setEnabled(false);
+			shiftPanel.add(btnShiftCurrentF[i], "cell " + (i+4) + " 5");
+		}
+		
+		// ACTION LISTENERS
+		// DEFENSE - add button action listener
+		btnShiftAddDefense.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (txtShiftDefense.getText().toString().equals("")){
+					return;
+				}
+				
+				String txtValue = txtShiftDefense.getText().toString().replaceAll("\\s","");
+				String[] player = txtValue.split(",");
+				
+				for (int i = 0; i < player.length; i++){
+					if (player[i].length() < 2){
+						player[i] = " " + player[i];
+					}
+					btnShiftDefense[i].setText(player[i]);
+					btnShiftDefense[i].setVisible(true);
+					btnShiftDefense[i].setEnabled(true);
+				}
+			}
+		});
+		
+		// FORWARD - add button action listener
+		btnShiftAddForward.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (txtShiftForward.getText().toString().equals("")){
+					return;
+				}
+				
+				String txtValue = txtShiftForward.getText().toString().replaceAll("\\s","");
+				String[] player = txtValue.split(",");
+				
+				for (int i = 0; i < player.length; i++){
+					if (player[i].length() < 2){
+						player[i] = " " + player[i];
+					}
+					btnShiftForward[i].setText(player[i]);
+					btnShiftForward[i].setVisible(true);
+					btnShiftForward[i].setEnabled(true);
+				}
+			}
+		});
+		
+		// 
+		for (int i = 0; i < shiftRows*2; i++){
+			btnShiftDefense[i].addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					for (int i = 0; i < 30; i++){
-						if (e.getSource().equals(btnOff[i])){
-							btnOn[i].setEnabled(true);
-							btnOff[i].setEnabled(false);
+					for (int i = 0; i < shiftRows*2; i++){
+						if (e.getSource().equals(btnShiftDefense[i])){
+							btnShiftDefense[i].setEnabled(false);
 							
-							JPHdb.addShift(System.currentTimeMillis(), txtPlayer[i].getText().toString(), "OFF");
+							String player = btnShiftDefense[i].getText().toString();
+							
+							JPHdb.addShift(System.currentTimeMillis(), player, "ON");
+							
+							for(int j = 0; j < 4; j++){
+								if (btnShiftCurrentD[j].getText().toString().replaceAll("\\s","").equals("")){
+									btnShiftCurrentD[j].setText(player);
+									btnShiftCurrentD[j].setEnabled(true);
+									break;
+								}
+							}
 							break; // don't need to loop anymore
 						}
 					}
 				}
 			});
-			
-			btnOn[i].addActionListener(new ActionListener() {
+		}
+		
+		for (int i = 0; i < shiftRows*3; i++){
+			btnShiftForward[i].addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					for (int i = 0; i < 30; i++){
-						if (e.getSource().equals(btnOn[i])){
-							btnOn[i].setEnabled(false);
-							btnOff[i].setEnabled(true);
+					for (int i = 0; i < shiftRows*3; i++){
+						if (e.getSource().equals(btnShiftForward[i])){
+							btnShiftForward[i].setEnabled(false);
 							
-							JPHdb.addShift(System.currentTimeMillis(), txtPlayer[i].getText().toString(), "ON");
-							break;
+							String player = btnShiftForward[i].getText().toString();
+							
+							JPHdb.addShift(System.currentTimeMillis(), player, "ON");
+							
+							for(int j = 0; j < 6; j++){
+								if (btnShiftCurrentF[j].getText().toString().replaceAll("\\s","").equals("")){
+									btnShiftCurrentF[j].setText(player);
+									btnShiftCurrentF[j].setEnabled(true);
+									break;
+								}
+							}
+							break; // don't need to loop anymore
 						}
 					}
 				}
 			});
 		}
 		
-		final JButton btnLock = new JButton("Lock");
-		shiftPanel.add(btnLock, "cell 1 10");
+		for (int i = 0; i < 4; i++){
+			btnShiftCurrentD[i].addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					for (int i = 0; i < 4; i++){
+						if (e.getSource().equals(btnShiftCurrentD[i])){
+							btnShiftCurrentD[i].setEnabled(false);
+							
+							String player = btnShiftCurrentD[i].getText().toString();
+							
+							JPHdb.addShift(System.currentTimeMillis(), player, "OFF");
+							
+							btnShiftCurrentD[i].setText(" ");
+							
+							for(int j = 0; j < shiftRows*2; j++){
+								if (btnShiftDefense[j].getText().toString().equals(player)){
+									btnShiftDefense[j].setEnabled(true);
+									break;
+								}
+							}
+							break; // don't need to loop anymore
+						}
+					}
+				}
+			});
+		}
 		
-		final JButton btnUnlock = new JButton("Unlock");
-		btnUnlock.setEnabled(false);
-		shiftPanel.add(btnUnlock, "cell 2 10");
+		for (int i = 0; i < 6; i++){
+			btnShiftCurrentF[i].addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					for (int i = 0; i < 6; i++){
+						if (e.getSource().equals(btnShiftCurrentF[i])){
+							btnShiftCurrentF[i].setEnabled(false);
+							
+							String player = btnShiftCurrentF[i].getText().toString();
+							
+							JPHdb.addShift(System.currentTimeMillis(), player, "OFF");
+							
+							btnShiftCurrentF[i].setText(" ");
+							
+							for(int j = 0; j < shiftRows*3; j++){
+								if (btnShiftForward[j].getText().toString().equals(player)){
+									btnShiftForward[j].setEnabled(true);
+									break;
+								}
+							}
+							break; // don't need to loop anymore
+						}
+					}
+				}
+			});
+		}
+		
+// ###########################################################################################
+		// Add an array of textboxes and buttons (maybe this is NOT the way to do this..., but who's to say?
+//		final JButton[] btnOn = new JButton[30];
+//		final JButton[] btnOff = new JButton[30];
+//		final JTextField[] txtPlayer = new JTextField[30];
+//		
+//		for (int i=0; i<10; i++){
+//			txtPlayer[i] = new JTextField();
+//			txtPlayer[i].setColumns(4);
+//			shiftPanel.add(txtPlayer[i], "cell 0 " + i);
+//			
+//			btnOff[i] = new JButton("OFF");
+//			btnOff[i].setBackground(new Color(210,105,30));
+//			shiftPanel.add(btnOff[i], "cell 1 " + i);
+//			
+//			btnOn[i] = new JButton("ON");
+//			btnOn[i].setBackground(new Color(30,144,255));
+//			shiftPanel.add(btnOn[i], "cell 2 " + i);
+//			btnOn[i].setEnabled(false);
+//		}
+//		
+//		for (int i=10; i < 20; i++){
+//			txtPlayer[i] = new JTextField();
+//			txtPlayer[i].setColumns(4);
+//			shiftPanel.add(txtPlayer[i], "cell 3 " + (i-10));
+//			
+//			btnOff[i] = new JButton("OFF");
+//			btnOff[i].setBackground(new Color(210,105,30));
+//			shiftPanel.add(btnOff[i], "cell 4 " + (i-10));
+//			
+//			btnOn[i] = new JButton("ON");
+//			btnOn[i].setBackground(new Color(30,144,255));
+//			shiftPanel.add(btnOn[i], "cell 5 " + (i-10));
+//			btnOn[i].setEnabled(false);
+//		}
+//		
+//		for (int i=20; i < 30; i++){
+//			txtPlayer[i] = new JTextField();
+//			txtPlayer[i].setColumns(4);
+//			shiftPanel.add(txtPlayer[i], "cell 6 " + (i-20));
+//			
+//			btnOff[i] = new JButton("OFF");
+//			btnOff[i].setBackground(new Color(210,105,30));
+//			shiftPanel.add(btnOff[i], "cell 7 " + (i-20));
+//			
+//			btnOn[i] = new JButton("ON");
+//			btnOn[i].setBackground(new Color(30,144,255));
+//			shiftPanel.add(btnOn[i], "cell 8 " + (i-20));
+//			btnOn[i].setEnabled(false);
+//		}
+//		
+//		// Action Listeners
+//		for (int i = 0; i < 30; i++){
+//			btnOff[i].addActionListener(new ActionListener() {
+//				public void actionPerformed(ActionEvent e) {
+//					for (int i = 0; i < 30; i++){
+//						if (e.getSource().equals(btnOff[i])){
+//							btnOn[i].setEnabled(true);
+//							btnOff[i].setEnabled(false);
+//							
+//							JPHdb.addShift(System.currentTimeMillis(), txtPlayer[i].getText().toString(), "OFF");
+//							break; // don't need to loop anymore
+//						}
+//					}
+//				}
+//			});
+//			
+//			btnOn[i].addActionListener(new ActionListener() {
+//				public void actionPerformed(ActionEvent e) {
+//					for (int i = 0; i < 30; i++){
+//						if (e.getSource().equals(btnOn[i])){
+//							btnOn[i].setEnabled(false);
+//							btnOff[i].setEnabled(true);
+//							
+//							JPHdb.addShift(System.currentTimeMillis(), txtPlayer[i].getText().toString(), "ON");
+//							break;
+//						}
+//					}
+//				}
+//			});
+//		}
+		
+//		final JButton btnLock = new JButton("Lock");
+//		shiftPanel.add(btnLock, "cell 1 10");
+//		
+//		final JButton btnUnlock = new JButton("Unlock");
+//		btnUnlock.setEnabled(false);
+//		shiftPanel.add(btnUnlock, "cell 2 10");
 		
 		// Add action listeners for the lock and unlock buttons
-		btnLock.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				for (int i = 0; i < 30; i++){
-					txtPlayer[i].setEditable(false);
-					
-					if (txtPlayer[i].getText().equals("")){
-						btnOn[i].setEnabled(false);
-						btnOff[i].setEnabled(false);
-					}
-				}
-				
-				btnLock.setEnabled(false);
-				btnUnlock.setEnabled(true);
-			}
-		});
-		
-		btnUnlock.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				for (int i = 0; i < 30; i++){
-					txtPlayer[i].setEditable(true);
-					
-					if (txtPlayer[i].getText().equals("")){
-						btnOn[i].setEnabled(false);
-						btnOff[i].setEnabled(true);
-					}
-				}
-				
-				btnLock.setEnabled(true);
-				btnUnlock.setEnabled(false);
-			}
-		});
+//		btnLock.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				for (int i = 0; i < 30; i++){
+//					txtPlayer[i].setEditable(false);
+//					
+//					if (txtPlayer[i].getText().equals("")){
+//						btnOn[i].setEnabled(false);
+//						btnOff[i].setEnabled(false);
+//					}
+//				}
+//				
+//				btnLock.setEnabled(false);
+//				btnUnlock.setEnabled(true);
+//			}
+//		});
+//		
+//		btnUnlock.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				for (int i = 0; i < 30; i++){
+//					txtPlayer[i].setEditable(true);
+//					
+//					if (txtPlayer[i].getText().equals("")){
+//						btnOn[i].setEnabled(false);
+//						btnOff[i].setEnabled(true);
+//					}
+//				}
+//				
+//				btnLock.setEnabled(true);
+//				btnUnlock.setEnabled(false);
+//			}
+//		});
 	}
 }
