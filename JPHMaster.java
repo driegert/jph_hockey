@@ -224,6 +224,10 @@ public class JPHMaster {
 		final JButton btnRightAttempt = new JButton("ATTEMPT");
 		neutralPanel.add(btnRightAttempt, "cell 2 2");
 		
+		final JButton btnCancel = new JButton("CANCEL");
+		btnCancel.setEnabled(false);
+		neutralPanel.add(btnCancel, "cell 1 3");
+		
 		final JButton btnRightFailure = new JButton("FAILURE");
 		btnRightFailure.setEnabled(false);
 		btnRightFailure.setBackground(new Color(250, 128, 114));
@@ -232,6 +236,20 @@ public class JPHMaster {
 		/* =======================================
 		 * ==== Neutral Zone Action Listeners ==== 
 		 * ======================================= */
+		btnCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				btnLeftAttempt.setEnabled(true);
+				btnRightAttempt.setEnabled(true);
+				btnLeftSuccess.setEnabled(false);
+				btnLeftFailure.setEnabled(false);
+				btnRightSuccess.setEnabled(false);
+				btnRightFailure.setEnabled(false);
+				btnCancel.setEnabled(false);
+				
+				lblNeutralAttemptTime.setText("0000000000000");
+			}
+		});
+		
 		neutralLeftTeam.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
 				String curr = neutralLeftTeam.getSelectedItem().toString();
@@ -249,6 +267,8 @@ public class JPHMaster {
 				btnLeftAttempt.setEnabled(false);
 				btnLeftSuccess.setEnabled(true);
 				btnLeftFailure.setEnabled(true);
+				btnRightAttempt.setEnabled(false);
+				btnCancel.setEnabled(true);
 				
 				lblNeutralAttemptTime.setText(String.valueOf(System.currentTimeMillis()));
 			}
@@ -257,8 +277,10 @@ public class JPHMaster {
 		btnLeftSuccess.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnLeftAttempt.setEnabled(true);
+				btnRightAttempt.setEnabled(true);
 				btnLeftSuccess.setEnabled(false);
 				btnLeftFailure.setEnabled(false);
+				btnCancel.setEnabled(false);
 				
 				JPHdb.addNeutralZone(lblNeutralAttemptTime.getText(), true, neutralLeftTeam.getSelectedItem().toString());
 				lblNeutralAttemptTime.setText("0000000000000");
@@ -268,8 +290,10 @@ public class JPHMaster {
 		btnLeftFailure.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnLeftAttempt.setEnabled(true);
+				btnRightAttempt.setEnabled(true);
 				btnLeftSuccess.setEnabled(false);
 				btnLeftFailure.setEnabled(false);
+				btnCancel.setEnabled(false);
 				
 				JPHdb.addNeutralZone(lblNeutralAttemptTime.getText(), false, neutralLeftTeam.getSelectedItem().toString());
 				lblNeutralAttemptTime.setText("0000000000000");
@@ -279,8 +303,10 @@ public class JPHMaster {
 		btnRightAttempt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				btnRightAttempt.setEnabled(false);
+				btnLeftAttempt.setEnabled(false);
 				btnRightSuccess.setEnabled(true);
 				btnRightFailure.setEnabled(true);
+				btnCancel.setEnabled(true);
 				
 				lblNeutralAttemptTime.setText(String.valueOf(System.currentTimeMillis()));
 			}
@@ -289,8 +315,10 @@ public class JPHMaster {
 		btnRightSuccess.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnRightAttempt.setEnabled(true);
+				btnLeftAttempt.setEnabled(true);
 				btnRightSuccess.setEnabled(false);
 				btnRightFailure.setEnabled(false);
+				btnCancel.setEnabled(false);
 				
 				JPHdb.addNeutralZone(lblNeutralAttemptTime.getText(), true, lblNeutralOther.getText().toString());
 				lblNeutralAttemptTime.setText("0000000000000");
@@ -300,8 +328,10 @@ public class JPHMaster {
 		btnRightFailure.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnRightAttempt.setEnabled(true);
+				btnLeftAttempt.setEnabled(true);
 				btnRightSuccess.setEnabled(false);
 				btnRightFailure.setEnabled(false);
+				btnCancel.setEnabled(false);
 				
 				JPHdb.addNeutralZone(lblNeutralAttemptTime.getText(), false, lblNeutralOther.getText().toString());
 				lblNeutralAttemptTime.setText("0000000000000");
