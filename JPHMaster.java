@@ -461,6 +461,11 @@ public class JPHMaster {
 					btnShiftDefense[i].setText(player[i]);
 					btnShiftDefense[i].setVisible(true);
 					btnShiftDefense[i].setEnabled(true);
+					
+					if (i % 2 == 0){
+						btnShiftDefenseAll[i / 2].setVisible(true);
+						btnShiftDefenseAll[i / 2].setEnabled(true);
+					}
 				}
 			}
 		});
@@ -482,6 +487,11 @@ public class JPHMaster {
 					btnShiftForward[i].setText(player[i]);
 					btnShiftForward[i].setVisible(true);
 					btnShiftForward[i].setEnabled(true);
+					
+					if (i % 3 == 0){
+						btnShiftForwardAll[i / 3].setVisible(true);
+						btnShiftForwardAll[i / 3].setEnabled(true);
+					}
 				}
 			}
 		});
@@ -581,6 +591,111 @@ public class JPHMaster {
 									btnShiftForward[j].setEnabled(true);
 									break;
 								}
+							}
+							break; // don't need to loop anymore
+						}
+					}
+				}
+			});
+		}
+		
+		// DEFENSE - ALL action listeners
+		for (int i = 0; i < shiftRows; i++){
+			btnShiftDefenseAll[i].addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					for (int i = 0; i < shiftRows; i++){
+						if (e.getSource().equals(btnShiftDefenseAll[i])){
+														
+							String[] player = {"", "", "", ""};
+							
+							for (int j = 0; j < 4; j++){
+								String curPlayer = btnShiftCurrentD[j].getText().toString().replaceAll("\\s","");
+								if (!(curPlayer.equals(""))){
+									player[j] = curPlayer;
+									
+									for (int m = 0; m < shiftRows*2; m++){
+										if (btnShiftDefense[m].getText().toString().replaceAll("\\s","").equals(curPlayer)){
+											btnShiftDefense[m].setEnabled(true);
+										}
+									}
+								}
+								
+								btnShiftCurrentD[j].setText(" ");
+								btnShiftCurrentD[j].setEnabled(false);
+							}
+							
+							for (int j = 0; j < 4; j++){
+								if (!(player[j].equals(""))){
+									JPHdb.addShift(System.currentTimeMillis(), player[j], "OFF");
+								}
+							}
+							
+							player[0] = btnShiftDefense[2*i].getText().toString();
+							player[1] = btnShiftDefense[2*i+1].getText().toString();
+							
+							btnShiftDefense[2*i].setEnabled(false);
+							btnShiftDefense[2*i+1].setEnabled(false);
+							
+							JPHdb.addShift(System.currentTimeMillis(), player[0], "ON");
+							JPHdb.addShift(System.currentTimeMillis(), player[1], "ON");
+							
+							for (int m = 0; m < 2; m++){
+								btnShiftCurrentD[m].setText(player[m]);
+								btnShiftCurrentD[m].setEnabled(true);
+							}
+							break; // don't need to loop anymore
+						}
+					}
+				}
+			});
+		}
+		
+		// FORWARD - ALL action listeners
+		for (int i = 0; i < shiftRows; i++){
+			btnShiftForwardAll[i].addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					for (int i = 0; i < shiftRows; i++){
+						if (e.getSource().equals(btnShiftForwardAll[i])){
+														
+							String[] player = {"", "", "", "", "", ""};
+							
+							for (int j = 0; j < 6; j++){
+								String curPlayer = btnShiftCurrentF[j].getText().toString().replaceAll("\\s","");
+								if (!(curPlayer.equals(""))){
+									player[j] = curPlayer;
+									
+									for (int m = 0; m < shiftRows*3; m++){
+										if (btnShiftForward[m].getText().toString().replaceAll("\\s","").equals(curPlayer)){
+											btnShiftForward[m].setEnabled(true);
+										}
+									}
+								}
+								
+								btnShiftCurrentF[i].setText(" ");
+								btnShiftCurrentF[i].setEnabled(false);
+							}
+							
+							for (int j = 0; j < 6; j++){
+								if (!(player[j].equals(""))){
+									JPHdb.addShift(System.currentTimeMillis(), player[j], "OFF");
+								}
+							}
+							
+							player[0] = btnShiftDefense[3*i].getText().toString();
+							player[1] = btnShiftDefense[3*i+1].getText().toString();
+							player[2] = btnShiftDefense[3*i+2].getText().toString();
+							
+							btnShiftForward[3*i].setEnabled(false);
+							btnShiftForward[3*i+1].setEnabled(false);
+							btnShiftForward[3*i+1].setEnabled(false);
+							
+							JPHdb.addShift(System.currentTimeMillis(), player[0], "ON");
+							JPHdb.addShift(System.currentTimeMillis(), player[1], "ON");
+							JPHdb.addShift(System.currentTimeMillis(), player[2], "ON");
+							
+							for (int m = 0; m < 3; m++){
+								btnShiftCurrentF[m].setText(player[m]);
+								btnShiftCurrentF[m].setEnabled(true);
 							}
 							break; // don't need to loop anymore
 						}
